@@ -36,7 +36,7 @@ exports.updateUser = async (req, res, next) => {
 
     const { email, oldPassword, newPassword, confirmNewPassword, birthDate } =
       req.body;
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    const isMatch = await bcrypt.compare(oldPassword, req.user.password);
     if (!isMatch) {
       createError("invalid password", 400);
     }
@@ -47,8 +47,9 @@ exports.updateUser = async (req, res, next) => {
     //   createError("user not found", 404);
     // }
     
-    if (oldPassword !== user.password) {
-      createError("old password is not correct", 400);
+    const isCorrect = await bcrypt.compare(oldPassword, req.user.password);
+    if (!isCorrect) {
+      createError("username or password is not correct", 400);
     }
 
     if (newPassword !== confirmNewPassword) {
@@ -60,9 +61,20 @@ exports.updateUser = async (req, res, next) => {
     if (newPassword.length < 6) {
       createError("new password must be at least 6 characters", 400);
     }
+
+    const value = {email, birthDate}
+
+    if (newPassword) {
+      console.log(newPassword);
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+      value.lastUpdatePassword = new Date()
+      value.password = hashedPassword
+    }
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     const result = await User.update(
-      { email, password: hashedPassword, birthDate },
+      // { email, password: hashedPassword, birthDate, },
+      value,
       { where: { id: req.user.id } }
     );
     res.status(200).json({ message: "user updated successfully", result });
@@ -93,7 +105,7 @@ exports.login = async (req, res, next) => {
     }
     const payload = { id: user.id, username: user.username };
     const SECRET_KEY = "YOUR SECRET MESSAGE";
-    const option = { expiresIn: "1h" };
+    const option = { expiresIn: "30d" };
     const token = jwt.sign(payload, SECRET_KEY, option);
     res.json({ message: "login successfully", token: token });
   } catch (error) {

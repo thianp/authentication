@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       birthDate: {
         type: DataTypes.DATEONLY,
       },
+      lastUpdatePassword: {
+        type: DataTypes.DATE
+      }
     },
     { underscored: true, paranoid: true }
   );

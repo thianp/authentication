@@ -3,6 +3,9 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 
+require('dotenv').config()
+console.log(process.env);
+
 const userRoute = require("./routes/userRoute");
 const todoRoute = require("./routes/todoRoute");
 const notFoundMiddleWare = require("./middlewares/notFound");
