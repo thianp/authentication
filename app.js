@@ -4,7 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 require('dotenv').config()
-console.log(process.env);
+require('./config/passport')
 
 const userRoute = require("./routes/userRoute");
 const todoRoute = require("./routes/todoRoute");
@@ -12,6 +12,7 @@ const notFoundMiddleWare = require("./middlewares/notFound");
 const errorMiddleWare = require("./middlewares/error");
 const UserMiddleware = require("./middlewares/userAuthorize");
 const { sequelize } = require("./models");
+const passportJwt = require('./middlewares/passportJwt')
 
 // ## MIDDLEWARE
 app.use(cors());
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ## ROUTES
 app.use("/api/users", userRoute);
-app.use("/api/todo", UserMiddleware.getUserByToken,todoRoute);
+app.use("/api/todo", passportJwt,todoRoute);
 
 // ## NOTFOUND & ERROR
 app.use(notFoundMiddleWare);

@@ -15,16 +15,16 @@ exports.createTodo = async (req, res, next) => {
 // ## UPDATE TODO
 exports.updateTodo = async (req, res, next) => {
   try {
-    const { todoId, title, completed, dueDate } = req.body;
-    const todo = await Todo.findOne({ where: { id: todoId, userId: req.user.id } });
+    const {id} = req.params
+    const { title, completed, dueDate } = req.body;
+    const todo = await Todo.findOne({ where: { id, userId: req.user.id } });
     if (!todo) {
       createError("todo not found", 404);
     }
     const result = await Todo.update(
       { title, completed, dueDate },
-      { where: { id: todoId, userId: req.user.id } }
+      { where: { id, userId: req.user.id } }
     );
-    console.log(result, { id: todoId, userId: req.user.id })
     if (result[0] === 0) {
       createError("Todo with this id is not found", 400);
     }

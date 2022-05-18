@@ -12,7 +12,7 @@ exports.getUserByToken = async (req, res, next) => {
     if (!token) {
       createError("you are unauthorized", 401);
     }
-    const SECRET_KEY = "YOUR SECRET MESSAGE";
+    const SECRET_KEY = "qwertyuiop";
     const decoded = jwt.verify(token, SECRET_KEY);
     const user = await User.findOne({ where: { id: decoded.id } });
     if (decoded.iat * 1000 < new Date(user.lastUpdatePassword).getTime()) {

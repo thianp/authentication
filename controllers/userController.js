@@ -104,7 +104,7 @@ exports.login = async (req, res, next) => {
       createError("username or password is not correct", 400);
     }
     const payload = { id: user.id, username: user.username };
-    const SECRET_KEY = "YOUR SECRET MESSAGE";
+    const SECRET_KEY = "qwertyuiop";
     const option = { expiresIn: "30d" };
     const token = jwt.sign(payload, SECRET_KEY, option);
     res.json({ message: "login successfully", token: token });
